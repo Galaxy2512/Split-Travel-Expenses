@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.noop-zavr-ni-projekt-kseparovi</groupId> <!-- Promijeni prema svom imenu paketa -->
+  <artifactId>noop-zavr-ni-projekt-kseparovi</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source> <!-- Verzija Jave koju koristiš -->
+    <maven.compiler.target>1.8</maven.compiler.target> <!-- Verzija Jave koju koristiš -->
+  </properties>
+
+  <dependencies>
+    <!-- Ovisnost za MySQL JDBC Driver -->
+    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.33</version>
+    </dependency>
+
+
+
+    <!-- Ovisnost za JUnit (ako koristiš testiranje) -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version> <!-- Ako koristiš JUnit za testiranje -->
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Maven plugin za izradu jar datoteke -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
