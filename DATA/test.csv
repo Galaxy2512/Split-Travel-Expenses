@@ -1,3 +1,3 @@
 Name,Category,Paid By,Date,Amount,Split Between,Debts
-Vecera,HRANA,Kristina,2025-01-30,123.00,Kristina;Gloria,"Gloria owes Kristina 61.50 euros, "
-Rucak,HRANA,Gloria,2025-01-30,150.00,Kristina;Gloria,"Kristina owes Gloria 75.00 euros, "
+Hrana,HRANA,Kiki,2025-01-30,112.00,Kiki;Lili,"Lili owes Kiki 56.00 euros, "
+RUcak u restoranu,HRANA,Lili,2025-01-30,80.00,Kiki;Lili,"Kiki owes Lili 40.00 euros, "

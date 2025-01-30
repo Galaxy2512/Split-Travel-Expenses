@@ -50,4 +50,9 @@ public class ExpencesModel implements ExpencesObservable {
             observer.updateExpenses();
         }
     }
+
+    public void clearExpenses() {
+        expenses.clear();
+        notifyObservers();
+    }
 }

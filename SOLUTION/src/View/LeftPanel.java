@@ -1,32 +1,5 @@
 package View;
 
-/**
- *
- * Klasa LeftPanel predstavlja lijevu stranu panela.
- * Lijeva strana panela sadrzi polja za unos podataka o trosku.
- *
- *
- * @version 1.0
- *
- * Method leftPanelEventOccurred se poziva kada se desi dogadjaj na lijevoj strani panela.
- *
- * Method activatePanel se koristi za aktiviranje panela.
- *
- * Method layoutComps se koristi za postavljanje komponenti na panel.
- *
- * Method initComps se koristi za inicijalizaciju komponenti.
- *
- * Method decoratePanel se koristi za dekorisanje panela.
- *
- * Method updatePaidByField se koristi za azuriranje polja za placanje.
- *
- * Method setController se koristi za postavljanje kontrolera.
- *
- *
- * @see LeftPanelEvent
- *
- */
-
 import Controller.Controller;
 
 import javax.swing.*;
@@ -85,51 +58,6 @@ public class LeftPanel extends JPanel implements LeftPanelListener {
 
     private void activatePanel() {
         setBackground(Color.LIGHT_GRAY);
-
-        // Inside the activatePanel method
-        sendDataBtn.addActionListener(e -> {
-            if (users.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please add users before processing any calculations.", "No Users", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            String name = nameField.getText();
-            String category = (String) categoryField.getSelectedItem();  // Ensure category is retrieved correctly
-            String paidBy = (String) paidByField.getSelectedItem();
-            Date date = (Date) dateField.getValue();
-            int amount;
-
-            if (category == null || category.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please select a valid category.", "Invalid Category", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            if (name.isEmpty() || category == null || paidBy == null || date == null) {
-                JOptionPane.showMessageDialog(this, "Please fill in all fields before sending data.", "Missing Fields", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            if (amountField.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid integer amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            try {
-                amount = Integer.parseInt(amountField.getText());
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid integer amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            int rowCount = tableModel.getRowCount();
-            List<String> eventUsers = new ArrayList<>();
-            for (int i = 0; i < rowCount; i++) {
-                eventUsers.add((String) tableModel.getValueAt(i, 0));
-            }
-
-            LeftPanelEvent event = new LeftPanelEvent(this, name, category, paidBy, date, amount, eventUsers);
-            leftPanelEventOccurred(event);
-        });
 
         nameField.addKeyListener(new KeyAdapter() {
             @Override
@@ -249,8 +177,36 @@ public class LeftPanel extends JPanel implements LeftPanelListener {
 
     public void setController(Controller controller) {
         sendDataBtn.addActionListener(e -> {
-            LeftPanelEvent event = new LeftPanelEvent(this, nameField.getText(), (String) categoryField.getSelectedItem(),
-                    (String) paidByField.getSelectedItem(), (Date) dateField.getValue(), Double.parseDouble(amountField.getText()), users);
+            String name = nameField.getText();
+            String category = (String) categoryField.getSelectedItem();
+            String paidBy = (String) paidByField.getSelectedItem();
+            Date date = (Date) dateField.getValue();
+            double amount;
+
+            if (name.isEmpty() || category == null || category.trim().isEmpty() || paidBy == null || date == null) {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields before sending data.", "Missing Fields", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (amountField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                amount = Double.parseDouble(amountField.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int rowCount = tableModel.getRowCount();
+            List<String> eventUsers = new ArrayList<>();
+            for (int i = 0; i < rowCount; i++) {
+                eventUsers.add((String) tableModel.getValueAt(i, 0));
+            }
+
+            LeftPanelEvent event = new LeftPanelEvent(this, name, category, paidBy, date, amount, eventUsers);
             controller.processLeftPanelEvent(event);
         });
     }

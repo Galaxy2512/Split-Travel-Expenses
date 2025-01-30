@@ -1,24 +1,7 @@
-package View;
+package Controller;
 
-/**
- * MenuBar class represents the menu bar in the application.
- * MenuBar contains file menu with export, import and exit options.
- *
- * @version 1.0
- *
- * Method exportData exports data to a file.
- * Method importData imports data from a file.
- *
- * Method setController sets the controller.
- * Method setMenuBarListener sets the menu bar listener.
- *
- * @see MenuBarListener
- * @see MenuBarEvent
- *
- *
- */
-
-import Controller.Controller;
+import View.MenuBarEvent;
+import View.MenuBarListener;
 import Model.DatabaseConnection;
 import Model.Expense;
 import Model.ExpenseCategory;
@@ -30,96 +13,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MenuBar extends JMenuBar {
+public class DataHandle {
 
     private Controller controller;
     private MenuBarListener menuBarListener;
 
-    public MenuBar() {
-        // File menu
-        JMenu fileMenu = new JMenu("File");
-
-        JMenuItem exportItem = new JMenuItem("Export Data...");
-        JMenuItem importItem = new JMenuItem("Import Data...");
-        JMenuItem exitItem = new JMenuItem("Exit");
-
-        fileMenu.add(exportItem);
-        fileMenu.add(importItem);
-
-        fileMenu.addSeparator();
-        fileMenu.add(exitItem);
-
-        // Adding menus to the menu bar
-        add(fileMenu);
-
-        // Delete Expense Action
-        JMenuItem deleteAllItem = new JMenuItem("Delete ALL Data");
-        fileMenu.add(deleteAllItem);
-
-        deleteAllItem.addActionListener(e -> {
-            if (controller != null) {
-                controller.handleDeleteAllData();
-            }
-            if (menuBarListener != null) {
-                menuBarListener.menuBarEventOccurred(new MenuBarEvent("Delete ALL Data"));
-            }
-        });
-
-        // File menu actions
-        exitItem.addActionListener(e -> {
-            if (controller != null) {
-                controller.handleExit();
-            }
-            if (menuBarListener != null) {
-                menuBarListener.menuBarEventOccurred(new MenuBarEvent("Exit"));
-            }
-        });
-
-        exportItem.addActionListener(e -> {
-            if (controller != null) {
-                exportData();
-            }
-            if (menuBarListener != null) {
-                menuBarListener.menuBarEventOccurred(new MenuBarEvent("Export Data"));
-            }
-        });
-
-        importItem.addActionListener(e -> {
-            if (controller != null) {
-                handleImport();
-            }
-            if (menuBarListener != null) {
-                menuBarListener.menuBarEventOccurred(new MenuBarEvent("Import Data"));
-            }
-        });
-    }
-
-    public void setController(Controller controller) {
-        this.controller = controller;
-    }
-
-    public void setMenuBarListener(MenuBarListener listener) {
-        this.menuBarListener = listener;
-    }
-
-    private void exportTextData(File file, boolean isCsv) throws IOException {
-        try (FileWriter writer = new FileWriter(file)) {
-            String data = getExportData();
-            if (!isCsv) {
-                data = data.replace(",", "\t");
-            }
-            writer.write(data);
+    public void handleDeleteAllData() {
+        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete ALL data?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            DatabaseConnection.deleteAllData();
+            controller.getExpencesModel().clearExpenses();
+            controller.getRightPanel().refreshTable();
         }
     }
 
-    private void exportBinaryData(File file) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-            String data = getExportData();
-            oos.writeObject(data);
-        }
-    }
-
-    private void exportData() {
+    public void exportData() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Choose export file");
 
@@ -129,7 +37,7 @@ public class MenuBar extends JMenuBar {
         fileChooser.addChoosableFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Binary Files", "bin"));
         fileChooser.setAcceptAllFileFilterUsed(false);
 
-        int userSelection = fileChooser.showSaveDialog(this);
+        int userSelection = fileChooser.showSaveDialog(null);
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
@@ -157,14 +65,31 @@ public class MenuBar extends JMenuBar {
                 } else {
                     exportTextData(selectedFile, extension.equals("csv"));
                 }
-                JOptionPane.showMessageDialog(this, "Data exported successfully.", "Export", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Data exported successfully.", "Export", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error exporting data: " + ex.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error exporting data: " + ex.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private void handleImport() {
+    private void exportTextData(File file, boolean isCsv) throws IOException {
+        try (FileWriter writer = new FileWriter(file)) {
+            String data = getExportData();
+            if (!isCsv) {
+                data = data.replace(",", "\t");
+            }
+            writer.write(data);
+        }
+    }
+
+    private void exportBinaryData(File file) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            String data = getExportData();
+            oos.writeObject(data);
+        }
+    }
+
+    public void handleImport() {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(null);
         if (result != JFileChooser.APPROVE_OPTION) return;
@@ -254,4 +179,14 @@ public class MenuBar extends JMenuBar {
 
         return data.toString();
     }
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public void setMenuBarListener(MenuBarListener menuBarListener) {
+        this.menuBarListener = menuBarListener;
+    }
+
+
 }
