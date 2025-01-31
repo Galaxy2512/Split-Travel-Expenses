@@ -1,11 +1,12 @@
+
 package View;
 
-import Controller.Controller;
-
+import Controller.LeftPanelController;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class LeftPanel extends JPanel implements LeftPanelListener {
     private Dimension dim = getPreferredSize();
     private List<String> users;
     private RightPanelListener rightPanelListener;
+    private LeftPanelController controller;
 
     public LeftPanel(RightPanelListener rightPanelListener) {
         this.rightPanelListener = rightPanelListener;
@@ -175,39 +177,35 @@ public class LeftPanel extends JPanel implements LeftPanelListener {
         }
     }
 
-    public void setController(Controller controller) {
-        sendDataBtn.addActionListener(e -> {
-            String name = nameField.getText();
-            String category = (String) categoryField.getSelectedItem();
-            String paidBy = (String) paidByField.getSelectedItem();
-            Date date = (Date) dateField.getValue();
-            double amount;
+    public void setController(LeftPanelController controller) {
+        this.controller = controller;
+        for (ActionListener al : sendDataBtn.getActionListeners()) {
+            sendDataBtn.removeActionListener(al);
+        }
+        sendDataBtn.addActionListener(e -> controller.processLeftPanelEvent());
+    }
 
-            if (name.isEmpty() || category == null || category.trim().isEmpty() || paidBy == null || date == null) {
-                JOptionPane.showMessageDialog(this, "Please fill in all fields before sending data.", "Missing Fields", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+    public JTextField getNameField() {
+        return nameField;
+    }
 
-            if (amountField.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+    public JComboBox<String> getCategoryField() {
+        return categoryField;
+    }
 
-            try {
-                amount = Double.parseDouble(amountField.getText());
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid amount.", "Invalid Amount", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+    public JComboBox<String> getPaidByField() {
+        return paidByField;
+    }
 
-            int rowCount = tableModel.getRowCount();
-            List<String> eventUsers = new ArrayList<>();
-            for (int i = 0; i < rowCount; i++) {
-                eventUsers.add((String) tableModel.getValueAt(i, 0));
-            }
+    public JSpinner getDateField() {
+        return dateField;
+    }
 
-            LeftPanelEvent event = new LeftPanelEvent(this, name, category, paidBy, date, amount, eventUsers);
-            controller.processLeftPanelEvent(event);
-        });
+    public JTextField getAmountField() {
+        return amountField;
+    }
+
+    public DefaultTableModel getTableModel() {
+        return tableModel;
     }
 }

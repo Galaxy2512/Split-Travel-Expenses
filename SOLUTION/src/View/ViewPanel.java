@@ -1,6 +1,7 @@
 package View;
 
-import Controller.Controller;
+import Controller.LeftPanelController;
+import Controller.RightPanelController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,8 +31,9 @@ public class ViewPanel extends JPanel {
         add(rightPanel, BorderLayout.CENTER);
     }
 
-    public void setController(Controller controller) {
-        leftPanel.setController(controller);
+    public void setController(LeftPanelController leftPanelController, RightPanelController rightPanelController) {
+        leftPanel.setController(leftPanelController);
+        rightPanel.setController(rightPanelController);
     }
 
     public LeftPanel getLeftPanel() {

@@ -13,6 +13,8 @@ package View;
  */
 
 import Controller.Controller;
+import Controller.LeftPanelController;
+import Controller.RightPanelController;
 import Model.ExpencesModel;
 import Model.UserModel;
 
@@ -22,12 +24,16 @@ public class MainFrame extends JFrame {
     private ViewPanel viewPanel;
     private MenuBar menuBar;
     private Controller controller;
+    private LeftPanelController leftPanelController;
+    private RightPanelController rightPanelController;
 
     public MainFrame() {
         UserModel userModel = new UserModel();
         ExpencesModel expencesModel = new ExpencesModel();
         viewPanel = new ViewPanel();
         controller = new Controller(userModel, expencesModel, viewPanel.getLeftPanel(), viewPanel.getRightPanel());
+        leftPanelController = new LeftPanelController(viewPanel.getLeftPanel(), controller);
+        rightPanelController = new RightPanelController(viewPanel.getRightPanel());
 
         setTitle("Expense Tracker");
         setSize(800, 600);
@@ -48,8 +54,7 @@ public class MainFrame extends JFrame {
             }
         });
 
-        viewPanel.setController(controller);
+        viewPanel.setController(leftPanelController, rightPanelController);
         menuBar.setController(controller);
     }
-
 }
