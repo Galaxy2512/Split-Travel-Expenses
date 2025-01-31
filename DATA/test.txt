@@ -1,0 +1,4 @@
+Name	Category	Paid By	Date	Amount	Split Between	Debts
+Kino	KARTE	Mare	2025-01-31	142.00	Mare;Kiki;Lili	"Kiki owes Mare 47.33 euros	  Lili owes Mare 47.33 euros	 "
+VIno	KARTE	Kiki	2025-01-31	124.00	Mare;Kiki;Lili	"Mare owes Kiki 41.33 euros	  Lili owes Kiki 41.33 euros	 "
+VIno	KARTE	Lili	2025-01-31	45.00	Mare;Kiki;Lili	"Mare owes Lili 15.00 euros	  Kiki owes Lili 15.00 euros	 "
