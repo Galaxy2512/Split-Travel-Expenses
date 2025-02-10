@@ -7,11 +7,10 @@ import View.RightPanel;
 
 import javax.swing.*;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Glavni kontroler
- */
 public class Controller {
     private UserModel userModel;
     private ExpencesModel expencesModel;
@@ -20,34 +19,18 @@ public class Controller {
     private LeftPanelController leftPanelController;
     private RightPanelController rightPanelController;
 
-
-    /**
-     * Konstruktor kontrolera
-     *
-     * @param userModel     model korisnika
-     * @param expencesModel model troškova
-     * @param leftPanel     lijevi panel
-     * @param rightPanel    desni panel
-     */
     public Controller(UserModel userModel, ExpencesModel expencesModel, LeftPanel leftPanel, RightPanel rightPanel) {
         this.userModel = userModel;
         this.expencesModel = expencesModel;
         this.leftPanel = leftPanel;
         this.rightPanel = rightPanel;
 
-        // Kreiraj kontrolere za lijevi i desni panel
         this.rightPanelController = new RightPanelController(rightPanel, expencesModel);
         this.leftPanelController = new LeftPanelController(leftPanel, this);
 
-        // Poveži model troškova s desnim panelom
         this.expencesModel.addObserver(this.rightPanel);
     }
 
-    /**
-     * Obrada događaja iz lijevog panela
-     *
-     * @param event događaj iz lijevog panela
-     */
     public void processLeftPanelEvent(LeftPanelEvent event) {
         String name = event.getName();
         ExpenseCategory category = ExpenseCategory.valueOf(event.getCategory().toUpperCase());
@@ -56,18 +39,14 @@ public class Controller {
         double amount = event.getAmount();
         List<String> users = event.getUsers();
 
-        // Kreiraj novi trošak
         Expense expense = new Expense(name, category, paidBy, amount, date, users);
         expense.setDebts(event.getDebtUsers(), event.getDebtAmounts());
 
-        // 1️⃣ Dodajemo trošak u model
         expencesModel.addExpense(expense);
 
-        // 2️⃣ Dodajemo trošak u desni panel (GUI)
         rightPanelController.addExpense(name, category.name(), paidBy, date, amount, users);
 
-        // 3️⃣ Spremi trošak u bazu podataka
-        DatabaseConnection.saveExpenseToDatabase(
+        DataBaseController.saveExpenseToDatabase(
                 expense.getName(),
                 expense.getCategory().name(),
                 expense.getPaidBy(),
@@ -76,56 +55,29 @@ public class Controller {
                 expense.getUsers()
         );
 
-        // 4️⃣ Nakon dodavanja novog troška, preračunaj sve troškove
         rightPanelController.rebuildFromModel();
     }
 
-    /**
-     * Dohvati model troškova
-     *
-     * @return model troškova
-     */
     public ExpencesModel getExpencesModel() {
         return expencesModel;
     }
 
-    /**
-     * Dohvati desni panel
-     *
-     * @return desni panel
-     */
     public RightPanel getRightPanel() {
         return rightPanel;
     }
 
-    /**
-     * Dohvati kontroler desnog panela
-     *
-     * @return kontroler desnog panela
-     */
     public RightPanelController getRightPanelController() {
         return rightPanelController;
     }
 
-    /**
-     * Dohvati lijevi panel
-     *
-     * @return lijevi panel
-     */
     public LeftPanel getLeftPanel() {
         return leftPanel;
     }
 
-    /**
-     * Izlazak iz aplikacije
-     */
     public void exitApplication() {
         System.exit(0);
     }
 
-    /**
-     * Obradi akciju izlaska uz potvrdu korisnika
-     */
     public void handleExit() {
         int result = JOptionPane.showConfirmDialog(null,
                 "Jeste li sigurni da želite izaći?",
@@ -134,6 +86,67 @@ public class Controller {
 
         if (result == JOptionPane.YES_OPTION) {
             exitApplication();
+        }
+    }
+
+    public void loadDataFromDatabase() {
+        if (this == null) return;
+
+        expencesModel.clearExpenses();
+        leftPanel.clearUsers();
+        rightPanel.refreshTable();
+
+        List<String> dbUsers = DataBaseController.getAllUsers();
+        for (String user : dbUsers) {
+            leftPanel.addUser(user);
+        }
+
+        ResultSet rsExpenses = DataBaseController.getAllExpenses();
+
+        try {
+            while (rsExpenses.next()) {
+                String name = rsExpenses.getString("name");
+                String category = rsExpenses.getString("category");
+                String paidBy = rsExpenses.getString("paid_by");
+                java.sql.Date date = rsExpenses.getDate("date");
+                double amount = rsExpenses.getDouble("amount");
+
+                int expenseId = rsExpenses.getInt("id");
+                List<String> expenseUsers = DataBaseController.getUsersForExpense(expenseId);
+
+                Expense expense = new Expense(
+                        name,
+                        ExpenseCategory.valueOf(category.toUpperCase()),
+                        paidBy,
+                        amount,
+                        new java.sql.Date(date.getTime()),
+                        expenseUsers
+                );
+                expencesModel.addExpense(expense);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error loading data from database: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        rightPanelController.rebuildFromModel();
+        rightPanel.refreshTable();
+
+        JOptionPane.showMessageDialog(null,
+                "Data successfully loaded from database!",
+                "Load Complete",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void deleteAllData() {
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to delete ALL data?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            DataBaseController.deleteAllData();
+            expencesModel.clearExpenses();
+            leftPanel.clearUsers();
+            rightPanel.refreshTable();
+            rightPanel.setTotalDebtsAreaText("");
         }
     }
 }

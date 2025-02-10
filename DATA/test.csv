@@ -1,5 +1,5 @@
-Name,Category,Paid By,Date,Amount,Split Between,Debts
-Hrana,KARTE,Kiki,2025-02-05,120.00,Kiki;Lili,"Lili owes Kiki 60.00 euros, "
-Hrana,KARTE,Kiki,2025-02-05,120.00,Kiki;Lili,"Lili owes Kiki 60.00 euros, "
-Hrana,KARTE,Lili,2025-02-05,120.00,Kiki;Lili,"Kiki owes Lili 60.00 euros, "
-Hrana,KARTE,Lili,2025-02-05,120.00,Kiki;Lili,"Kiki owes Lili 60.00 euros, "
+Ime,Kategorija,Platio,Datum,Iznos,Raspodijeljeno,Obveze
+Kino,KARTE,Kiki,2025-02-10,80.00,Kiki;Lili,"Kiki duguje Kiki 40.00 eura;
+Lili duguje Kiki 40.00 eura;"
+Kuglanje,KARTE,Lili,2025-02-10,90.00,Kiki;Lili,"Kiki duguje Lili 45.00 eura;
+Lili duguje Lili 45.00 eura;"

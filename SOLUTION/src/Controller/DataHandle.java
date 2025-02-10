@@ -1,8 +1,8 @@
+// Java
 package Controller;
 
 import View.MenuBarEvent;
 import View.MenuBarListener;
-import Model.DatabaseConnection;
 import Model.Expense;
 import Model.ExpenseCategory;
 
@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * Klasa DataHandle upravlja operacijama izvoza i uvoza podataka, kao i brisanjem svih podataka.
- *
  *
  * @version 1.0
  */
@@ -30,7 +29,7 @@ public class DataHandle {
     public void handleDeleteAllData() {
         int confirm = JOptionPane.showConfirmDialog(null, "Jeste li sigurni da želite obrisati SVE podatke?", "Upozorenje", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            DatabaseConnection.deleteAllData(); //iz baze podataka
+            DataBaseController.deleteAllData(); //iz baze podataka
             controller.getExpencesModel().clearExpenses();
             controller.getRightPanel().refreshTable();
         }
@@ -194,8 +193,7 @@ public class DataHandle {
                         controller.getExpencesModel().addExpense(expense);
                         controller.getRightPanel().addExpense(name, category.name(), paidBy, date, amount, users, expense.getDebts());
 
-                        // 🚀 ISPRAVKA: Pozivamo metodu s ispravnim parametrima
-                        DatabaseConnection.saveExpenseToDatabase(
+                        DataBaseController.saveExpenseToDatabase(
                                 expense.getName(),
                                 expense.getCategory().name(),
                                 expense.getPaidBy(),
