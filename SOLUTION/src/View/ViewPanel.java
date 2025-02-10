@@ -26,7 +26,7 @@ public class ViewPanel extends JPanel {
     public ViewPanel() {
         setLayout(new BorderLayout());
         rightPanel = new RightPanel();
-        leftPanel = new LeftPanel(rightPanel);
+        leftPanel = new LeftPanel((RightPanelListener) rightPanel);
         add(leftPanel, BorderLayout.WEST);
         add(rightPanel, BorderLayout.CENTER);
     }

@@ -7,6 +7,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Klasa LeftPanelController predstavlja kontroler za LeftPanel.
+ * Kontroler je zaduzen za obradu dogadjaja iz lijevog panela.
+ * Metoda processLeftPanelEvent obradjuje dogadjaj iz lijevog panela.
+ *
+ * @version 1.0
+ *
+ *
+ */
+
 public class LeftPanelController {
     private LeftPanel leftPanel;
     private Controller controller;
@@ -17,6 +27,14 @@ public class LeftPanelController {
         this.leftPanel.setController(this);
     }
 
+    /**
+     * Metoda processLeftPanelEvent obradjuje dogadjaj iz lijevog panela.
+     * Metoda provjerava da li su svi podaci uneseni prije slanja podataka.
+     * Ako nisu, ispisuje se odgovarajuca poruka.
+     * Ako jesu, podaci se salju kontroleru.
+     *
+     *
+     */
     public void processLeftPanelEvent() {
         String name = leftPanel.getNameField().getText();
         String category = (String) leftPanel.getCategoryField().getSelectedItem();
@@ -47,7 +65,11 @@ public class LeftPanelController {
             eventUsers.add((String) leftPanel.getTableModel().getValueAt(i, 0));
         }
 
-        LeftPanelEvent event = new LeftPanelEvent(leftPanel, name, category, paidBy, date, amount, eventUsers);
+
+        List<String> debtUsers = leftPanel.getDebtUsers();
+        List<Double> debtAmounts = leftPanel.getDebtAmounts();
+
+        LeftPanelEvent event = new LeftPanelEvent(name, category, paidBy, date, amount, eventUsers, debtUsers, debtAmounts);
         controller.processLeftPanelEvent(event);
     }
 }

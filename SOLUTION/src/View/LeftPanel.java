@@ -1,4 +1,3 @@
-
 package View;
 
 import Controller.LeftPanelController;
@@ -208,4 +207,38 @@ public class LeftPanel extends JPanel implements LeftPanelListener {
     public DefaultTableModel getTableModel() {
         return tableModel;
     }
+
+    // Add methods to get debt users and debt amounts
+    public List<String> getDebtUsers() {
+        List<String> debtUsers = new ArrayList<>();
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            debtUsers.add((String) tableModel.getValueAt(i, 0));
+        }
+        return debtUsers;
+    }
+
+    public List<Double> getDebtAmounts() {
+        List<Double> debtAmounts = new ArrayList<>();
+        double amount = Double.parseDouble(amountField.getText());
+        double splitAmount = amount / tableModel.getRowCount();
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            debtAmounts.add(splitAmount);
+        }
+        return debtAmounts;
+    }
+
+    public void clearUsers() {
+        users.clear();
+        tableModel.setRowCount(0);
+        paidByField.removeAllItems();
+    }
+
+    public void addUser(String user) {
+        if (!users.contains(user)) {
+            users.add(user);
+            tableModel.addRow(new Object[]{user});
+            paidByField.addItem(user);
+        }
+    }
+
 }

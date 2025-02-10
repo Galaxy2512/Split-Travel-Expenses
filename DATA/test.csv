@@ -1,3 +1,5 @@
 Name,Category,Paid By,Date,Amount,Split Between,Debts
-hihi,KARTE,Kiki,2025-01-31,123.00,Kiki;GLo,"GLo owes Kiki 61.50 euros, "
-hrana,HRANA,GLo,2025-01-31,456.00,Kiki;GLo,"Kiki owes GLo 228.00 euros, "
+Hrana,KARTE,Kiki,2025-02-05,120.00,Kiki;Lili,"Lili owes Kiki 60.00 euros, "
+Hrana,KARTE,Kiki,2025-02-05,120.00,Kiki;Lili,"Lili owes Kiki 60.00 euros, "
+Hrana,KARTE,Lili,2025-02-05,120.00,Kiki;Lili,"Kiki owes Lili 60.00 euros, "
+Hrana,KARTE,Lili,2025-02-05,120.00,Kiki;Lili,"Kiki owes Lili 60.00 euros, "

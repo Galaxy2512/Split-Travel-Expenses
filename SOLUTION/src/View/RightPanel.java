@@ -2,6 +2,7 @@ package View;
 
 import Controller.RightPanelController;
 import Model.ExpencesObserver;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -12,14 +13,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The RightPanel class represents the right panel in the application's user interface.
+ * It displays expenses, user amounts, and total debts, and allows clearing of data.
+ *
+ * @version 1.0
+ */
 public class RightPanel extends JPanel implements ExpencesObserver, RightPanelListener {
     private JTable expenseTable;
     private DefaultTableModel tableModel;
+    private JTable userAmountTable;
+    private DefaultTableModel userAmountTableModel;
     private JTextArea totalDebtsArea;
+    private JTextArea userTotalsArea;
+    private JButton clearButton;
     private Map<String, Double> totalDebts;
     private RightPanelController controller;
-    private JButton clearButton;
+    public UserSummaryPanel userSummaryPanel;
 
+    /**
+     * Constructs a new RightPanel and initializes its components.
+     */
     public RightPanel() {
         setLayout(new BorderLayout());
         totalDebts = new HashMap<>();
@@ -33,11 +47,22 @@ public class RightPanel extends JPanel implements ExpencesObserver, RightPanelLi
         expenseTable = new JTable(tableModel);
         expenseTable.setPreferredScrollableViewportSize(new Dimension(500, 300));
 
+        userAmountTableModel = new DefaultTableModel(new Object[]{"User", "Amount"}, 0);
+        userAmountTable = new JTable(userAmountTableModel);
+        userAmountTable.setPreferredScrollableViewportSize(new Dimension(500, 150));
+
         totalDebtsArea = new JTextArea();
         totalDebtsArea.setEditable(false);
         totalDebtsArea.setPreferredSize(new Dimension(500, 100));
 
+        userTotalsArea = new JTextArea();
+        userTotalsArea.setEditable(false);
+        userTotalsArea.setPreferredSize(new Dimension(500, 200));
+
         clearButton = new JButton("Clear");
+
+        // Initialize userSummaryPanel
+        userSummaryPanel = new UserSummaryPanel();
     }
 
     private void layoutComponents() {
@@ -46,7 +71,13 @@ public class RightPanel extends JPanel implements ExpencesObserver, RightPanelLi
         bottomPanel.add(new JScrollPane(totalDebtsArea), BorderLayout.CENTER);
         bottomPanel.add(clearButton, BorderLayout.SOUTH);
 
-        add(new JScrollPane(expenseTable), BorderLayout.CENTER);
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout());
+        centerPanel.add(new JScrollPane(userAmountTable), BorderLayout.CENTER);
+        centerPanel.add(new JScrollPane(userTotalsArea), BorderLayout.SOUTH);
+
+        add(new JScrollPane(expenseTable), BorderLayout.NORTH);
+        add(centerPanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
@@ -59,12 +90,34 @@ public class RightPanel extends JPanel implements ExpencesObserver, RightPanelLi
         });
     }
 
+    /**
+     * Sets the controller for the right panel.
+     *
+     * @param controller the controller to set
+     */
     public void setController(RightPanelController controller) {
         this.controller = controller;
     }
 
-    public void addExpense(String name, String category, String paidBy, Date date, double amount, List<String> users) {
+    /**
+     * Adds an expense to the panel.
+     *
+     * @param name the name of the expense
+     * @param category the category of the expense
+     * @param paidBy the person who paid for the expense
+     * @param date the date of the expense
+     * @param amount the amount of the expense
+     * @param users the users involved in the expense
+     * @param debts the debts associated with the expense
+     */
+    public void addExpense(String name, String category, String paidBy, Date date, double amount, List<String> users, String debts) {
         controller.addExpense(name, category, paidBy, date, amount, users);
+
+        double splitAmount = amount / users.size();
+
+        for (String user : users) {
+            userSummaryPanel.addUserExpense(user, splitAmount);
+        }
     }
 
     public DefaultTableModel getTableModel() {
@@ -73,6 +126,10 @@ public class RightPanel extends JPanel implements ExpencesObserver, RightPanelLi
 
     public void setTotalDebtsAreaText(String text) {
         totalDebtsArea.setText(text);
+    }
+
+    public void setUserTotalsAreaText(String text) {
+        userTotalsArea.setText(text);
     }
 
     public void refreshTable() {
@@ -86,6 +143,10 @@ public class RightPanel extends JPanel implements ExpencesObserver, RightPanelLi
 
     @Override
     public void rightPanelEventOccurred(RightPanelEvent event) {
-        // Handle the event (if needed)
+        // Handle right panel events if needed
+    }
+
+    public DefaultTableModel getUserAmountTableModel() {
+        return userAmountTableModel;
     }
 }

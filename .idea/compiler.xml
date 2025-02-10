@@ -11,6 +11,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="SOLUTION" />
+        <module name="noop-zavr-ni-projekt-kseparovi" />
       </profile>
     </annotationProcessing>
   </component>

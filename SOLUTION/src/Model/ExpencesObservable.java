@@ -3,8 +3,9 @@ package Model;
 
 /**
  * Klasa ExpencesObservable predstavlja interfejs za promatranje troskova.
- * Metoda addObserver dodaje promatrace troskova.
+ * Metoda addObserver dodaje promatraca troskova.
  * Metoda notifyObservers obavjestava promatrace o promjeni troskova.
+ *
  *
  * @see ExpencesObserver
  *
