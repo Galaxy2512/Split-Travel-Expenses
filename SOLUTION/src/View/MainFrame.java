@@ -26,7 +26,7 @@ public class MainFrame extends JFrame {
     private LeftPanelController leftPanelController;
     private RightPanelController rightPanelController;
 
-    public MainFrame() {
+    public MainFrame(String trim) {
         // Inicijalizacija modela
         UserModel userModel = new UserModel();
         ExpencesModel expencesModel = new ExpencesModel();

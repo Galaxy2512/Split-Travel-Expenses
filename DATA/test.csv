@@ -1,5 +1,5 @@
 Ime,Kategorija,Platio,Datum,Iznos,Raspodijeljeno,Obveze
-Kino,KARTE,Kiki,2025-02-10,80.00,Kiki;Lili,"Kiki duguje Kiki 40.00 eura;
-Lili duguje Kiki 40.00 eura;"
-Kuglanje,KARTE,Lili,2025-02-10,90.00,Kiki;Lili,"Kiki duguje Lili 45.00 eura;
-Lili duguje Lili 45.00 eura;"
+KIno,KARTE,Kiki,2025-02-10,70.00,Kiki;Glo,"Kiki duguje Kiki 35.00 eura;
+Glo duguje Kiki 35.00 eura;"
+Kuglanje,KARTE,Glo,2025-02-10,90.00,Kiki;Glo,"Kiki duguje Glo 45.00 eura;
+Glo duguje Glo 45.00 eura;"
